@@ -1,12 +1,13 @@
 #!/usr/bin/env python
-
 import sys, pickle
-from pinyin.hmm.viterbi2 import  *
+from pinyin.hmm.viterbi2 import *
+
 
 class TrieNode(object):
     def __init__(self):
         self.value = None
         self.children = {}
+
 
 class Trie(object):
     def __init__(self):
@@ -35,11 +36,13 @@ class Trie(object):
                 matches.append(node.value)
         return matches
 
+
 class ScanPos(object):
     def __init__(self, pos, token = None, parent = None):
         self.pos = pos
         self.token = token
         self.parent = parent
+
 
 class PinyinTokenizer(object):
     def __init__(self):
@@ -66,6 +69,7 @@ class PinyinTokenizer(object):
                 tokens.insert(0, pos.token)
             pos = pos.parent
         return tokens
+
 
 def prepare():
     trie = Trie()
