@@ -1,5 +1,11 @@
 # Pinyin_Demo
 
+## 本程序在原作者的LiuRony的Pinyin_Demo基础上加入了以下工作：
+1. 利用trie树拼音自动切分(pinyinSplit.py)
+2. 扩充概率矩阵(json2sqlite.py)
+3. 直接将概率矩阵保存在内存中进行计算(viterbi2.py)
+
+##以下是LiuRony原始说明：
 一个简单拼音输入法
 
 ## 隐马尔可夫模型实现
