@@ -19,19 +19,25 @@ def viterbi(pinyin_list):
         pinyin = pinyin_list[i]
 
         prob_map = {}
+        maxProb = 0
+        maxPhase = ""
         for phrase, prob in V.iteritems():
+            if prob > maxProb:
+                maxProb = prob
+                maxPhase = phrase
             character = phrase[-1]
             result = Transition.join_emission(pinyin, character)
             if not result:
-                continue
+                result = Emission.join_starting(pinyin)
 
-            state, new_prob = result
-            prob_map[phrase + state] = new_prob + prob
+            for state, new_prob in result:
+                prob_map[phrase + state] = new_prob + prob
 
         if prob_map:
             V = prob_map
         else:
-            return V
+            return  V
+
     return V
 
 
@@ -41,5 +47,9 @@ if __name__ == '__main__':
         pinyin_list = string.split()
         V = viterbi(pinyin_list)
 
+        i = 0
         for phrase, prob in sorted(V.items(), key=lambda d: d[1], reverse=True):
             print phrase, prob
+            i += 1
+            if(i > 5):
+                break

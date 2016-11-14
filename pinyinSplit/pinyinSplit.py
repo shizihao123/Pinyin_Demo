@@ -1,7 +1,6 @@
 #!/usr/bin/env python
-import sys, pickle
+import sys, cPickle as pickle, os
 from pinyin.hmm.viterbi2 import *
-
 
 class TrieNode(object):
     def __init__(self):
@@ -43,11 +42,17 @@ class ScanPos(object):
         self.token = token
         self.parent = parent
 
-
+from pinyinSplit import Trie
 class PinyinTokenizer(object):
+
     def __init__(self):
-        with open('pinyin_trie') as f:
-            self.trie = pickle.load(f)
+        # with open('/home/jun/workspace/Pinyin_Demo/pinyinSplit/pinyin_trie') as f:
+
+        # self.trie = prepare()
+        from pinyinSplit import Trie
+
+        self.trie = pickle.load(open("/home/jun/workspace/Pinyin_Demo/pinyinSplit/pinyin_trie.pkl", "r"))
+        # self.trie= pickle.load(f)
 
     def tokenize(self, content):
         total_length = len(content)
@@ -72,16 +77,18 @@ class PinyinTokenizer(object):
 
 
 def prepare():
+    from pinyinSplit import Trie
     trie = Trie()
-    file = open("pinyin.uniq", "r")
+    file = open("/home/jun/workspace/Pinyin_Demo/pinyinSplit/pinyin.uniq", "r")
     while 1:
         line = file.readline().split("\n")[0]
         if not line:
             break
         trie.add(line)
         pass  # do something
-    output = open('pinyin_trie', 'wb')
+    output = open('/home/jun/workspace/Pinyin_Demo/pinyinSplit/pinyin_trie.pkl', 'wb')
     pickle.dump(trie, output, 0)
+    return trie
 
 if __name__ == '__main__':
     while 1 :
@@ -94,5 +101,9 @@ if __name__ == '__main__':
         print pinyin_list
         V = viterbi(pinyin_list)
 
+        i = 0
         for phrase, prob in sorted(V.items(), key=lambda d: d[1], reverse=True):
             print phrase, prob
+            i += 1
+            if i >= 5:
+                break

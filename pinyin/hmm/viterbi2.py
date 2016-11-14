@@ -26,8 +26,15 @@ def viterbi(pinyin_list):
     Args:
         pinyin_list (list): 拼音列表
     """
+    if pinyin_list == []:
+        return {}
+
     start_mat, transition_mat, emission_mat, pinyin_mat = prepare_mat()
     start_char = {}        #计算第一个拼音对应的汉字
+
+    if not pinyin_mat.__contains__(pinyin_list[0]):
+        return {}
+
     for hanzi in pinyin_mat[pinyin_list[0]].keys():
         if start_mat.__contains__(hanzi):
             start_char[hanzi] = start_mat[hanzi] + emission_mat[hanzi][pinyin_list[0]]
@@ -41,7 +48,7 @@ def viterbi(pinyin_list):
             maxProb = 0
             state = ""
             new_prob = 0
-            for hanzi in pinyin_mat[pinyin].keys():    
+            for hanzi in pinyin_mat[pinyin].keys():
                 if transition_mat.__contains__(character) \
                     and transition_mat[character].__contains__(hanzi):
                     tmpProb = transition_mat[character][hanzi] + emission_mat[hanzi][pinyin]
@@ -50,7 +57,13 @@ def viterbi(pinyin_list):
                         state = hanzi
                         new_prob = tmpProb
             if not maxProb:
+                if pinyin_mat.__contains__(pinyin):
+                    hanzi_set = pinyin_mat[pinyin]
+                    state, new_prob = sorted(hanzi_set.items(), key=lambda d: d[1], reverse=True)[0]
+                    maxProb = new_prob
+            if not maxProb:
                 continue
+
             prob_map[phrase + state] = new_prob + prob
 
         if prob_map:

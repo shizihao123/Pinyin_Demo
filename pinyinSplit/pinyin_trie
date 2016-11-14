@@ -1,7 +1,7 @@
 ccopy_reg
 _reconstructor
 p0
-(c__main__
+(cpinyinSplit
 Trie
 p1
 c__builtin__
@@ -13,7 +13,7 @@ Rp4
 S'root'
 p6
 g0
-(c__main__
+(cpinyinSplit
 TrieNode
 p7
 g2
