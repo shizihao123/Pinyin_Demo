@@ -1,0 +1,43 @@
+<html>
+<body>
+<p>请输入两个数字</p>
+<form >
+    a: <input type="text" id="a" name="a"> <br>
+    b: <input type="text" id="b" name="b"> <br>
+    <p>result: <span id='result'></span></p>
+    <button type="button" id='sum'>提交</button>
+</form>
+ 
+<script src="http://apps.bdimg.com/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+    //$(document).ready(function(){
+      $("#sum").click(function(){
+        var a = $("#a").val();
+        var b = $("#b").val();
+ 
+        //$.ajax("/calc/",{"a": a, "b" :b}, function(ret){
+        //    $('#result').html(ret)
+        //})
+        $.ajax({
+        url : "/calc/", // the endpoint
+        type : "POST", // http method
+        data : { "a" : a }, // data sent with the post request
+
+        // handle a successful response
+        success : function(ret) {
+            $('#result').html(ret); // remove the value from the input
+            console.log(ret); // log the returned json to the console
+            console.log("success"); // another sanity check
+        },
+
+        // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+       	    console.log("failure");
+	 }
+    });
+      });
+  //  });
+</script>
+</body>
+</html>
+

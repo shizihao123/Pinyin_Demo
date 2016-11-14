@@ -1,0 +1,36 @@
+<html>
+<body>
+<h2>下面是对浏览器做兼容性处理，使用定时器</h2>
+<input type="text" id="input3" />
+<div id="value3" style="width:100%;height:30px;border:1px solid red;margin:10px 0"></div>
+
+
+<script typr="text/javascript">
+// 兼容各个浏览器下
+var timer = 0,
+    curVal = "";
+$("#input3").bind("propertychange input",function(e){
+    if(timer){
+        clearInterval(timer);
+        timer = 0;
+    }
+    curVal = $(e.target).val();
+    $("#value3").html(curVal);
+    interval();
+});
+
+function interval(){
+    timer = setInterval(function() {
+        if (curVal != $("#input3").val()) {
+            curVal = $("#input3").val();                                 
+　　　　     $("#value3").html($("#input3").val());
+         }
+    }, 100);
+}
+interval();
+// 兼容各个浏览器下 动态改变输入框值 
+$("#input3").val("11");
+</script>
+
+</body>
+</html>
