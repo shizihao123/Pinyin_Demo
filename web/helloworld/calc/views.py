@@ -9,7 +9,8 @@ from django.shortcuts import render
 from django.shortcuts import render
 from django.http import HttpResponse
 from pinyinSplit.pinyinSplit import *
-
+import json
+from django.http import JsonResponse
 def find_hanzi(input):
         tokenizer = PinyinTokenizer()
         # # print tokenizer.tokenize('woaibeijingtiananmentiananmenshangtaiyangsheng')
@@ -17,7 +18,8 @@ def find_hanzi(input):
         pinyin_list = tokenizer.tokenize(input)
         print pinyin_list
         V = viterbi(pinyin_list)
-
+	if V == {}:
+		return ""	
         i = 0
         for phrase, prob in sorted(V.items(), key=lambda d: d[1], reverse=True):
             return  phrase
@@ -28,10 +30,13 @@ def find_hanzi(input):
 
 
 def add(request):
-    a = request.POST['a']
-    c = find_hanzi(a)
-    print "hello " + c 
-    return HttpResponse((u' '+ c).encode('utf-8').strip())
+    pinyin = request.POST['pinyin']
+    num = request.POST['num']
+    hanzi = find_hanzi(pinyin)
+    print "hello " ,  num 
+    name_dict = {'num':num.encode('utf-8').strip(), 'hanzi':(u' '+ hanzi).encode('utf-8').strip()}
+    return JsonResponse(name_dict)
+    #return HttpResponse((u' '+ c).encode('utf-8').strip())
     #return HttpResponse(u"你好".encode('utf-8').strip())
 
 def show(request):

@@ -42,6 +42,8 @@ def viterbi(pinyin_list):
     V = start_char
     for i in range(1, len(pinyin_list)):
         pinyin = pinyin_list[i]
+        if not pinyin_mat.__contains__(pinyin):
+            continue
         prob_map = {}
         for phrase, prob in V.iteritems():
             character = phrase[-1]
@@ -49,8 +51,8 @@ def viterbi(pinyin_list):
             state = ""
             new_prob = 0
             for hanzi in pinyin_mat[pinyin].keys():
-                if transition_mat.__contains__(character) \
-                    and transition_mat[character].__contains__(hanzi):
+                if transition_mat.__contains__(character) and \
+                        transition_mat[character].__contains__(hanzi):
                     tmpProb = transition_mat[character][hanzi] + emission_mat[hanzi][pinyin]
                     if tmpProb > maxProb:
                         maxProb = tmpProb

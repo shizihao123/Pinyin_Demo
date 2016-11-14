@@ -24,6 +24,8 @@ class Trie(object):
         node.value = key
 
     def search(self, key):
+        if not key:
+            return []
         node = self.root
         matches = []
         matched_length = 0
@@ -33,14 +35,18 @@ class Trie(object):
             node = node.children[char]
             if node.value:
                 matches.append(node.value)
+        if not matches:
+               matches = key[0]
         return matches
 
 
+
 class ScanPos(object):
-    def __init__(self, pos, token = None, parent = None):
+    def __init__(self, pos, token=None, parent=None):
         self.pos = pos
         self.token = token
         self.parent = parent
+
 
 from pinyinSplit import Trie
 class PinyinTokenizer(object):
