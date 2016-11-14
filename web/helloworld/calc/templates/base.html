@@ -2,32 +2,39 @@
     <script src="http://apps.bdimg.com/libs/jquery/1.11.1/jquery.min.js">
     </script>
     <script>
+    var i = 0;
+    var rec = 0;
     // Firefox, Google Chrome, Opera, Safari, Internet Explorer from version 9
-        function OnInput (event) {
+	 function OnInput (event) {
        // $('#value').html(event.target.value)	
 //        $.get("127.0.0.1:8001/calc/",{'str':event.target.value}, function(ret){
 //            $('#value').html(ret)		
             	//document.getElementById("value").innerHTML = event.target.value;
   //          }
-         $.ajax({
-        url : "/calc/", // the endpoint
-        type : "POST", // http method
-        data : { "a" : event.target.value }, // data sent with the post request
+         if (event.target.value != ""){
+ 	        $.ajax({
+       		   	 url : "/calc/", // the endpoint
+       			 type : "POST", // http method
+    			 data : { "pinyin":event.target.value, 'num':i}, // data sent with the post request
+                         async: false,
+                success : function(ret) {
+		//        if(ret["num"] >= rec){
+                    $('#value').html(ret['hanzi']); // remove the value from the input
+	    	        rec = ret["num"];
+               // }
+		          console.log(ret["num"]); // log the returned json to the console
+          	      console.log("success"); // another sanity chec
+ 	         },
+        	    error: function(xhr,errmsg,err) {
+                      console.log("failure");
+		        }
+ 	        });
+               i = i + 1;
+	}else{
+        	$('#value').html(""); // remove the value from the input
+	}
 
-        // handle a successful response
-        success : function(ret) {
-            $('#value').html(ret); // remove the value from the input
-            console.log(ret); // log the returned json to the console
-            console.log("success"); // another sanity check
-        },
-
-        // handle a non-successful response
-        error : function(xhr,errmsg,err) {
-            console.log("failure");
-         }
-    });
-
-        }
+ }
     // Internet Explorer
         function OnPropChanged (event) {
             if (event.propertyName.toLowerCase () == "value") {
@@ -38,7 +45,7 @@
 </head>
 <body>
    <p> Please modify the contents of the text field.</p>
-   <form action="/calc" method="post">
+   <form action="/calc/" method="post">
     <input type="text" oninput="OnInput (event)" onpropertychange="OnPropChanged (event)" value="" />
     <div id="value" style="width:100%;height:30px;border:1px solid red;margin:10px 0"></div>
    </form>
