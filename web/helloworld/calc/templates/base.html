@@ -8,7 +8,7 @@
     var rec = 0;
 
 
-    function noNumbers(e)
+    function isNumbers(e)
     {
         var keynum;
         var keychar;
@@ -18,20 +18,31 @@
 //      //alert(keynum+':'+keychar);
         var flag = false;
         console.log(keychar);
+        if (e.keyCode == 13 || e.keyCode == 32){
+            keychar = "0";
+        }
+         if($('#input1').val() == "" && e.keyCode == 188 || e.keyCode == 102){
+            //keychar = "0"; == ","){
+                //"." || ","||"."||"!" ||"\""||"\'")){
+
+            $('#value2').val($('#value2').val() + keychar);
+        }
         if (keychar >= "0" && keychar <= "9"){
             var select = $('#value').text().split(",")[keychar-'0'].split(":")[1].replace(" ","");
+
             if(select != "undefined"){
-                $('#value2').html($('#value2').text() + select);
+                $('#value2').val($('#value2').val() + select);
                 $('#value').html("");
     //            $("input").attr("value","");
                 $('#input1').val("");
                 flag = true;
             }
         }
+
 //        return flag;
-        if(!flag) {
-            OnInput(event);
-        }
+//        if(!flag) {
+//            OnInput(e);
+//        }
     }
 
 
@@ -44,9 +55,11 @@
 //            $('#value').html(ret)		
             	//document.getElementById("value").innerHTML = event.target.value;
   //          }
-//         if(noNumbers(event)){
-//             return;
-//         }
+//         isNumbers(event);
+         if (event.target.value[event.target.value.length -1] >= "0"
+                 && event.target.value[event.target.value.length -1] <= "9"){
+             $('#input1').val("");
+         }
 
          if (event.target.value != ""){
  	        $.ajax({
@@ -84,21 +97,21 @@
 	}
 
  }
-//    // Internet Explorer
-//        function OnPropChanged (event) {
-//            if (event.propertyName.toLowerCase () == "value") {
-//                  document.getElementById("value").innerHTML = event.srcElement.value;
-//            }
-//        }
+    // Internet Explorer
+        function OnPropChanged (event) {
+            if (event.propertyName.toLowerCase () == "value") {
+                  document.getElementById("value").innerHTML = event.srcElement.value;
+            }
+        }
     </script>
 </head>
 <body>
    <p> pinyin输入法demo程序</p>
    <form action="/calc/" method="post">
-    <input type="text" id="input1" style="width:100%;height:30px;border:3px solid blue;margin:10px 0"
-             onkeydown="noNumbers(event)" value=""/>
+    <input type="text" onkeyup="value=value.replace(/[^a-z]/g,'')" id="input1" style="width:100%;height:30px;border:3px solid blue;margin:10px 0"
+        oninput="OnInput(event)" onkeydown="isNumbers(event)" value=""/>
     <div id="value" style="width:100%;height:30px;border:3px solid red;margin:10px 0"></div>
-    <div id="value2" style="width:100%;height:30px;border:3px solid red;margin:10px 0"></div>
+    <input id="value2" style="width:100%;height:30px;border:3px solid red;margin:10px 0"/>
    </form>
    <!--<input type="text"  onkeydown="return noNumbers(event)" />-->
 </body>

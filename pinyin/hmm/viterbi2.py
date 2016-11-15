@@ -4,11 +4,20 @@
 """
 from pinyin.model import Emission, Transition
 from json2sqlite.json2sqlite import json_load
+# import scipy.io as sio
+import pickle
 
 def prepare_mat():
-    start_mat = json_load("base_start.json")
-    transition_mat = json_load("base_transition.json")
-    emission_mat = json_load("base_emission.json")
+    # start_mat = json_load("base_start.json")
+    # transition_mat = json_load("base_transition.json")
+    # emission_mat = json_load("base_emission.json")
+    start_mat = pickle.load(open("/home/jun/workspace/Pinyin_Demo/json2sqlite/start.mat","rb"))
+    emission_mat = pickle.load(open("/home/jun/workspace/Pinyin_Demo/json2sqlite/emission.mat", "rb"))
+    transition_mat = pickle.load(open("/home/jun/workspace/Pinyin_Demo/json2sqlite/transition.mat","rb"))
+    # print transition_mat
+    # print transition_mat
+    # print emission_mat
+
     pinyin_mat = {}                      #计算拼音对应的汉字
     for hanzi in emission_mat.keys():
         for pinyin in emission_mat[hanzi]:
@@ -19,7 +28,7 @@ def prepare_mat():
                 pinyin_mat[pinyin][hanzi] = emission_mat[hanzi][pinyin]
     return start_mat, transition_mat, emission_mat, pinyin_mat
 
-def viterbi(pinyin_list):
+def viterbi(pinyin_list, start_mat, transition_mat, emission_mat, pinyin_mat):
     """
     viterbi算法实现输入法
 
@@ -29,7 +38,7 @@ def viterbi(pinyin_list):
     if pinyin_list == []:
         return {}
 
-    start_mat, transition_mat, emission_mat, pinyin_mat = prepare_mat()
+    # print pinyin_mat
     start_char = {}        #计算第一个拼音对应的汉字
 
     if not pinyin_mat.__contains__(pinyin_list[0]):
@@ -42,18 +51,22 @@ def viterbi(pinyin_list):
     V = start_char
     for i in range(1, len(pinyin_list)):
         pinyin = pinyin_list[i]
+        # print pinyin
         if not pinyin_mat.__contains__(pinyin):
             continue
+        # print "hap"
         prob_map = {}
         for phrase, prob in V.iteritems():
             character = phrase[-1]
-            maxProb = 0
+            maxProb = -0xffffff
             state = ""
             new_prob = 0
             for hanzi in pinyin_mat[pinyin].keys():
                 if transition_mat.__contains__(character) and \
                         transition_mat[character].__contains__(hanzi):
+                    # print hanzi
                     tmpProb = transition_mat[character][hanzi] + emission_mat[hanzi][pinyin]
+                    # print tmpProb
                     if tmpProb > maxProb:
                         maxProb = tmpProb
                         state = hanzi
@@ -63,7 +76,7 @@ def viterbi(pinyin_list):
                     hanzi_set = pinyin_mat[pinyin]
                     state, new_prob = sorted(hanzi_set.items(), key=lambda d: d[1], reverse=True)[0]
                     maxProb = new_prob
-            if not maxProb:
+            if maxProb == -0xffffff:
                 continue
 
             prob_map[phrase + state] = new_prob + prob
@@ -76,11 +89,16 @@ def viterbi(pinyin_list):
 
 
 if __name__ == '__main__':
+    flag = True
+    start_mat, transition_mat, emission_mat, pinyin_mat = prepare_mat()
     while 1:
         string = raw_input('input:')
         test = {}
-        pinyin_list = string.split()
-        V = viterbi(pinyin_list)
+        pinyin_list = string.split(" ")
+        print pinyin_list
 
+        V = viterbi(pinyin_list,start_mat, transition_mat, emission_mat, pinyin_mat)
         for phrase, prob in sorted(V.items(), key=lambda d: d[1], reverse=True):
             print phrase, prob
+    # transition_mat = pickle.load(open("/home/jun/workspace/Pinyin_Demo/json2sqlite/transition.mat", "rb"))
+
