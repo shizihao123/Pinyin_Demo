@@ -16,8 +16,8 @@
        		   	 url : "/calc/", // the endpoint
        			 type : "POST", // http method
     			 data : { "pinyin":event.target.value, 'num':i}, // data sent with the post request
-                         async: false,
-                success : function(ret) {
+                 async: false,
+                 success : function(ret) {
 		//        if(ret["num"] >= rec){
                     $('#value').html(ret['hanzi']); // remove the value from the input
 	    	        rec = ret["num"];
