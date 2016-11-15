@@ -6,6 +6,37 @@
     <script>
     var i = 0;
     var rec = 0;
+
+
+    function noNumbers(e)
+    {
+        var keynum;
+        var keychar;
+
+        keynum = window.event ? e.keyCode : e.which;
+        keychar = String.fromCharCode(keynum);
+//      //alert(keynum+':'+keychar);
+        var flag = false;
+        console.log(keychar);
+        if (keychar >= "0" && keychar <= "9"){
+            var select = $('#value').text().split(",")[keychar-'0'].split(":")[1].replace(" ","");
+            if(select != "undefined"){
+                $('#value2').html($('#value2').text() + select);
+                $('#value').html("");
+    //            $("input").attr("value","");
+                $('#input1').val("");
+                flag = true;
+            }
+        }
+//        return flag;
+        if(!flag) {
+            OnInput(event);
+        }
+    }
+
+
+
+
     // Firefox, Google Chrome, Opera, Safari, Internet Explorer from version 9
 	 function OnInput (event) {
        // $('#value').html(event.target.value)	
@@ -13,6 +44,10 @@
 //            $('#value').html(ret)		
             	//document.getElementById("value").innerHTML = event.target.value;
   //          }
+//         if(noNumbers(event)){
+//             return;
+//         }
+
          if (event.target.value != ""){
  	        $.ajax({
        		   	 url : "/calc/", // the endpoint
@@ -49,21 +84,23 @@
 	}
 
  }
-    // Internet Explorer
-        function OnPropChanged (event) {
-            if (event.propertyName.toLowerCase () == "value") {
-                  document.getElementById("value").innerHTML = event.srcElement.value;
-            }
-        }
+//    // Internet Explorer
+//        function OnPropChanged (event) {
+//            if (event.propertyName.toLowerCase () == "value") {
+//                  document.getElementById("value").innerHTML = event.srcElement.value;
+//            }
+//        }
     </script>
 </head>
 <body>
    <p> pinyin输入法demo程序</p>
    <form action="/calc/" method="post">
-    <input type="text" style="width:100%;height:30px;border:3px solid blue;margin:10px 0"
-           oninput="OnInput (event)" onpropertychange="OnPropChanged (event)" value="" />
+    <input type="text" id="input1" style="width:100%;height:30px;border:3px solid blue;margin:10px 0"
+             onkeydown="noNumbers(event)" value=""/>
     <div id="value" style="width:100%;height:30px;border:3px solid red;margin:10px 0"></div>
+    <div id="value2" style="width:100%;height:30px;border:3px solid red;margin:10px 0"></div>
    </form>
+   <!--<input type="text"  onkeydown="return noNumbers(event)" />-->
 </body>
 </html>
 
