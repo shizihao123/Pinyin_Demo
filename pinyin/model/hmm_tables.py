@@ -6,7 +6,6 @@ import os
 
 from sqlalchemy import Column, String, Integer, Float, create_engine, desc
 from sqlalchemy.orm import sessionmaker
-
 from pinyin.model.common import current_dir, BaseModel
 
 db_name = os.path.join(current_dir, 'hmm.sqlite')
@@ -39,7 +38,7 @@ class Transition(BaseModel):
         return record
 
     @classmethod
-    def join_emission(cls, pinyin, character):
+    def join_emission(cls, pinyin, character,limit=5):
         """join emission表查询
 
         Args:
@@ -52,8 +51,9 @@ class Transition(BaseModel):
             join(Emission, Emission.character == cls.behind).\
             filter(cls.previous == character).\
             filter(Emission.pinyin == pinyin).\
-            order_by(desc(Emission.probability + cls.probability))
-        result = query.first()
+            order_by(desc(Emission.probability + cls.probability)). \
+            limit(limit)
+        result = query.all()
         session.commit()
         return result
 
@@ -83,7 +83,7 @@ class Emission(BaseModel):
         return record
 
     @classmethod
-    def join_starting(cls, pinyin, limit=10):
+    def join_starting(cls, pinyin, limit=5):
         """join starting表查询
 
         Args:
@@ -99,6 +99,7 @@ class Emission(BaseModel):
             limit(limit)
         result = query.all()
         session.commit()
+        # print "result", result
         return result
 
 

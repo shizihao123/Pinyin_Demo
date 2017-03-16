@@ -5,19 +5,21 @@ sys.path.append("/home/jun/workspace/Pinyin_Demo")
 from django.shortcuts import render
 
 # Create your views here.
-
+from web.helloworld.calc import *
 from django.shortcuts import render
 from django.http import HttpResponse
 from pinyinSplit.pinyinSplit import *
 import json
 from django.http import JsonResponse
+
+
 def find_hanzi(input):
     tokenizer = PinyinTokenizer()
-    # # print tokenizer.tokenize('woaibeijingtiananmentiananmenshangtaiyangsheng')
-    # print tokenizer.tokenize(input)
     pinyin_list = tokenizer.tokenize(input)
     print pinyin_list
-    V = viterbi(pinyin_list)
+    # start_mat, transition_mat, emission_mat, pinyin_mat = prepare_mat()
+    # V = viterbi(pinyin_list)
+    V = viterbi(pinyin_list, start_mat, transition_mat, emission_mat, pinyin_mat)
     result = {}
     if V == {}:
         return ""
@@ -30,10 +32,6 @@ def find_hanzi(input):
         i += 1
     return result
 
-    #    i += 1
-    #    if i >= 5:
-    #        break
-
 
 def add(request):
     pinyin = request.POST.get('pinyin',"n")
@@ -41,15 +39,15 @@ def add(request):
     if num == '-1':
         return show(request)
     result = find_hanzi(pinyin)
-    print "hello ",  num
-    # print result
+    # print "request  number: ",  num
     hanzi_json = json.JSONEncoder().encode(result)
     print hanzi_json
     # name_dict = {'num':num.encode('utf-8').strip(), 'hanzi':{result}(u' '+ hanzi).encode('utf-8').strip()}
     name_dict = {'num':num.encode('utf-8').strip(), 'hanzi':hanzi_json}
     return JsonResponse(name_dict)
-    #return HttpResponse((u' '+ c).encode('utf-8').strip())
-    #return HttpResponse(u"你好".encode('utf-8').strip())
+    # return HttpResponse((u' '+ c).encode('utf-8').strip())
+    # return HttpResponse(u"你好".encode('utf-8').strip())
+
 
 def show(request):
     return render(request, 'base.html')

@@ -15,7 +15,6 @@ from pinyin.model import (
 )
 from pinyin.utils import iter_dict
 
-
 def init_start():
     """
     初始化起始概率

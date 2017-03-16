@@ -4,7 +4,6 @@
 """
 from pinyin.model import Emission, Transition
 from json2sqlite.json2sqlite import json_load
-# import scipy.io as sio
 import pickle
 
 def prepare_mat():
@@ -64,9 +63,7 @@ def viterbi(pinyin_list, start_mat, transition_mat, emission_mat, pinyin_mat):
             for hanzi in pinyin_mat[pinyin].keys():
                 if transition_mat.__contains__(character) and \
                         transition_mat[character].__contains__(hanzi):
-                    # print hanzi
                     tmpProb = transition_mat[character][hanzi] + emission_mat[hanzi][pinyin]
-                    # print tmpProb
                     if tmpProb > maxProb:
                         maxProb = tmpProb
                         state = hanzi
@@ -95,9 +92,8 @@ if __name__ == '__main__':
         string = raw_input('input:')
         test = {}
         pinyin_list = string.split(" ")
-        print pinyin_list
 
-        V = viterbi(pinyin_list,start_mat, transition_mat, emission_mat, pinyin_mat)
+        V = viterbi(pinyin_list, start_mat, transition_mat, emission_mat, pinyin_mat)
         for phrase, prob in sorted(V.items(), key=lambda d: d[1], reverse=True):
             print phrase, prob
     # transition_mat = pickle.load(open("/home/jun/workspace/Pinyin_Demo/json2sqlite/transition.mat", "rb"))

@@ -7,12 +7,10 @@
     var i = 0;
     var rec = 0;
 
-
     function isNumbers(e)
     {
         var keynum;
         var keychar;
-
         keynum = window.event ? e.keyCode : e.which;
         keychar = String.fromCharCode(keynum);
 //      //alert(keynum+':'+keychar);
@@ -22,9 +20,6 @@
             keychar = "0";
         }
          if($('#input1').val() == "" && e.keyCode == 188 || e.keyCode == 102){
-            //keychar = "0"; == ","){
-                //"." || ","||"."||"!" ||"\""||"\'")){
-
             $('#value2').val($('#value2').val() + keychar);
         }
         if (keychar >= "0" && keychar <= "9"){
@@ -33,29 +28,20 @@
             if(select != "undefined"){
                 $('#value2').val($('#value2').val() + select);
                 $('#value').html("");
-    //            $("input").attr("value","");
                 $('#input1').val("");
                 flag = true;
             }
         }
 
 //        return flag;
-//        if(!flag) {
-//            OnInput(e);
-//        }
+        if(!flag) {
+            OnInput(e);
+        }
     }
-
-
 
 
     // Firefox, Google Chrome, Opera, Safari, Internet Explorer from version 9
 	 function OnInput (event) {
-       // $('#value').html(event.target.value)	
-//        $.get("127.0.0.1:8001/calc/",{'str':event.target.value}, function(ret){
-//            $('#value').html(ret)		
-            	//document.getElementById("value").innerHTML = event.target.value;
-  //          }
-//         isNumbers(event);
          if (event.target.value[event.target.value.length -1] >= "0"
                  && event.target.value[event.target.value.length -1] <= "9"){
              $('#input1').val("");
@@ -68,22 +54,10 @@
     			 data : { "pinyin":event.target.value, 'num':i}, // data sent with the post request
                 async: false,
                 success : function(ret) {
-		//        if(ret["num"] >= rec){
-                    console.log(ret)
+                    console.log(ret);
                     $('#value').html(unescape((ret["hanzi"].replace(/\\u/g, '%u')))
                             .replace("{","") .replace("}","").replace(/"/g,""));
-//                    $.each(ret.hanzi,function(key,value){
-//                        $("#value").append("<div>" + value + "</div>" + "<br/> <hr/>");
-//                     });
-                    //$('#value').html(ret['hanzi']); // remove the value from the input
 	    	        rec = ret["num"];
-//    $.each(ret.hanzi, function(i, item) {
-//      $("#value").append(
-//          "<div>" + i + "</div>" +
-//          "<div>" + item + "</div><hr/>");
-//    });
-//    });
-               // }
 		          console.log(ret["num"]); // log the returned json to the console
           	      console.log("success"); // another sanity chec
  	         },
@@ -94,26 +68,47 @@
                i = i + 1;
 	}else{
         	$('#value').html(""); // remove the value from the input
-	}
+         }
 
- }
-    // Internet Explorer
-        function OnPropChanged (event) {
-            if (event.propertyName.toLowerCase () == "value") {
-                  document.getElementById("value").innerHTML = event.srcElement.value;
-            }
+    }
+    function OnPropChanged (event) {
+        if (event.propertyName.toLowerCase () == "value") {
+              document.getElementById("value").innerHTML = event.srcElement.value;
         }
+    }
     </script>
+    <style>
+        form.input{
+            border-radius: 10px;
+        }
+        #input1{
+            border-radius: 5px;
+            width: 70%;
+            height: 30px;
+            border: 1px solid blue;
+        }
+        #value{
+            width: 100%;
+            height: 20px;
+            border-radius: 5px;
+            border:1px solid white;
+        }
+        #value2{
+            width: 70%;
+            height:30px;
+            border-radius: 5px;
+            border:1px solid dodgerblue;
+        }
+    </style>
 </head>
 <body>
    <p> pinyin输入法demo程序</p>
    <form action="/calc/" method="post">
-    <input type="text" onkeyup="value=value.replace(/[^a-z]/g,'')" id="input1" style="width:100%;height:30px;border:3px solid blue;margin:10px 0"
+    <input type="text" onkeyup="value=value.replace(/[^a-z]/g,'')" id="input1"
         oninput="OnInput(event)" onkeydown="isNumbers(event)" value=""/>
-    <div id="value" style="width:100%;height:30px;border:3px solid red;margin:10px 0"></div>
-    <input id="value2" style="width:100%;height:30px;border:3px solid red;margin:10px 0"/>
+    <div id="value"></div>
+    <input id="value2"/>
    </form>
-   <!--<input type="text"  onkeydown="return noNumbers(event)" />-->
 </body>
 </html>
 
